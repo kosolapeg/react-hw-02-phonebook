@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Section from './components/Section';
 import Form from './components/Form';
 import Contacts from './components/Contacts';
-// import Filter from './components/Filter';
+import Filter from './components/Filter';
 import shortid from 'shortid';
 
 const App = () => {
@@ -30,6 +30,13 @@ const App = () => {
   }, [contacts]);
 
   const addContact = (name, number) => {
+    const isExistName = contacts.some(contact => contact.name === name);
+
+    if (isExistName) {
+      alert(`${name} is already in contacts`);
+      return;
+    }
+
     const newRecord = {
       id: shortid.generate(),
       name,
@@ -39,36 +46,35 @@ const App = () => {
     setContacts(prev => [newRecord, ...prev]);
   };
 
-  const getVisibleContacts = name => {
-    return contacts.filter(({ name }) => name.includes(name));
+  const getVisibleContacts = filter => {
+    const normalizedFilter = filter.toLocaleLowerCase();
+    return contacts.filter(({ name }) =>
+      name.toLocaleLowerCase().includes(normalizedFilter),
+    );
   };
-
-  const visibleContacts = getVisibleContacts(filter);
 
   const changeFilter = e => {
     const filterName = e.currentTarget.value;
     setFilter(filterName);
+  };
 
-    getVisibleContacts(filterName);
+  const deleteContact = id => {
+    setContacts(contacts.filter(contact => contact.id !== id));
   };
 
   return (
     <>
       <Section title="Phonebook">
-        <Form onSubmit={addContact} />
-        <label>
-          Search by name:
-          <input
-            type="text"
-            name="filter"
-            value={filter}
-            onChange={changeFilter}
-          />
-        </label>
+        <Form onSubmit={addContact}>
+          <Filter vlaue={filter} onChange={changeFilter} />
+        </Form>
       </Section>
 
       <Section title="Contacts">
-        <Contacts records={visibleContacts} />
+        <Contacts
+          records={getVisibleContacts(filter)}
+          onDelete={deleteContact}
+        />
       </Section>
     </>
   );

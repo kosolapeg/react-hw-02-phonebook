@@ -1,9 +1,9 @@
 .form {
-  width: 250px;
+  width: 300px;
 }
 .button {
   display: block;
-  min-width: 250px;
+  min-width: 300px;
   border: 0;
   cursor: pointer;
   color: black;

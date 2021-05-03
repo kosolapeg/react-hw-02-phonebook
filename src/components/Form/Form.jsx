@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import css from './Form.module.css';
 
-const Form = ({ onSubmit }) => {
+const Form = ({ onSubmit, children }) => {
   const [state, setState] = useState({ name: '', number: '' });
 
   const handleChange = e => {
@@ -47,6 +47,8 @@ const Form = ({ onSubmit }) => {
       <button type="submit" className={css.button}>
         Add contact
       </button>
+
+      {children}
     </form>
   );
 };
